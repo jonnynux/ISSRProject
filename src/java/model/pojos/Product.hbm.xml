@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 9-ago-2012 18.23.19 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="model.pojos.Product" table="product" catalog="issr">
+        <id name="idproduct" type="java.lang.Integer">
+            <column name="idproduct" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="store" lazy="false" class="model.pojos.Store" fetch="select">
+            <column name="store_idstore" not-null="true" />
+        </many-to-one>
+        <property name="brand" type="string">
+            <column name="brand" length="45" />
+        </property>
+        <property name="type" type="string">
+            <column name="type" length="45" not-null="true" />
+        </property>
+        <property name="totstored" type="int">
+            <column name="totstored" not-null="true" />
+        </property>
+        <property name="totrequested" type="int">
+            <column name="totrequested" not-null="true" />
+        </property>
+        <property name="totsold" type="int">
+            <column name="totsold" not-null="true" />
+        </property>
+        <property name="totexpired" type="int">
+            <column name="totexpired" not-null="true" />
+        </property>
+        <property name="totreturned" type="int">
+            <column name="totreturned" not-null="true" />
+        </property>
+        <property name="tempstored" type="int">
+            <column name="tempstored" not-null="true" />
+        </property>
+        <property name="temprequested" type="int">
+            <column name="temprequested" not-null="true" />
+        </property>
+        <property name="tempsold" type="int">
+            <column name="tempsold" not-null="true" />
+        </property>
+        <property name="tempexpired" type="int">
+            <column name="tempexpired" not-null="true" />
+        </property>
+        <property name="tempreturned" type="int">
+            <column name="tempreturned" not-null="true" />
+        </property>
+        <set name="lots" inverse="true">
+            <key>
+                <column name="product_idproduct" not-null="true" />
+            </key>
+            <one-to-many class="model.pojos.Lot" />
+        </set>
+    </class>
+</hibernate-mapping>

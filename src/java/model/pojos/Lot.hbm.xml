@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 9-ago-2012 18.23.19 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="model.pojos.Lot" table="lot" catalog="issr">
+        <id name="idlot" type="java.lang.Integer">
+            <column name="idlot" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="product" lazy="false" class="model.pojos.Product" fetch="select">
+            <column name="product_idproduct" not-null="true" />
+        </many-to-one>
+        <property name="barcode" type="string">
+            <column name="barcode" length="45" not-null="true" unique="true" />
+        </property>
+        <property name="quantity" type="int">
+            <column name="quantity" not-null="true" />
+        </property>
+        <property name="expiration" type="date">
+            <column name="expiration" length="10" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

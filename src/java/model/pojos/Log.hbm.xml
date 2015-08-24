@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 9-ago-2012 18.23.19 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="model.pojos.Log" table="log" catalog="issr">
+        <id name="idlog" type="int">
+            <column name="idlog" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="store" lazy="false" class="model.pojos.Store" fetch="select">
+            <column name="store_idstore" />
+        </many-to-one>
+        <property name="instanttime" type="timestamp">
+            <column name="instanttime" length="19" not-null="true" />
+        </property>
+        <property name="executor" type="string">
+            <column name="executor" length="45" not-null="true" />
+        </property>
+        <property name="activity" type="string">
+            <column name="activity" length="45" not-null="true" />
+        </property>
+        <property name="result" type="boolean">
+            <column name="result" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

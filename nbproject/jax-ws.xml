@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jax-ws xmlns="http://www.netbeans.org/ns/jax-ws/1">
+  <services>
+    <service name="UserWS">
+      <implementation-class>webservices.UserWS</implementation-class>
+    </service>
+    <service name="ProductWS">
+      <implementation-class>webservices.ProductWS</implementation-class>
+    </service>
+    <service name="StoreWS">
+      <implementation-class>webservices.StoreWS</implementation-class>
+    </service>
+    <service name="LoginWS">
+      <implementation-class>webservices.LoginWS</implementation-class>
+    </service>
+  </services>
+  <clients/>
+</jax-ws>

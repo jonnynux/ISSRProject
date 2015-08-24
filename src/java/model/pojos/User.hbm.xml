@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 9-ago-2012 18.23.19 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="model.pojos.User" table="user" catalog="issr">
+        <id name="iduser" type="java.lang.Integer">
+            <column name="iduser" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="store" lazy="false" class="model.pojos.Store" fetch="select">
+            <column name="store_idstore" />
+        </many-to-one>
+        <many-to-one name="role" lazy="false" class="model.pojos.Role" fetch="select">
+            <column name="role_idrole" not-null="true" />
+        </many-to-one>
+        <property name="login" type="string">
+            <column name="login" length="45" not-null="true" unique="true" />
+        </property>
+        <property name="password" type="string">
+            <column name="password" length="45" not-null="true" />
+        </property>
+        <property name="namesurname" type="string">
+            <column name="namesurname" length="45" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="45" not-null="true" unique="true" />
+        </property>
+        <property name="pwexpiration" type="date">
+            <column name="pwexpiration" length="10" />
+        </property>
+        <property name="regexpiration" type="date">
+            <column name="regexpiration" length="10" />
+        </property>
+        <property name="sessionduration" type="java.lang.Integer">
+            <column name="sessionduration" />
+        </property>
+    </class>
+</hibernate-mapping>

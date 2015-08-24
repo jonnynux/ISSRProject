@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 9-ago-2012 18.23.19 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="model.pojos.Role" table="role" catalog="issr">
+        <id name="idrole" type="java.lang.Integer">
+            <column name="idrole" />
+            <generator class="identity" />
+        </id>
+        <property name="name" type="string">
+            <column name="name" length="45" not-null="true" unique="true" />
+        </property>
+        <property name="generaladministrator" type="java.lang.Boolean">
+            <column name="generaladministrator" />
+        </property>
+        <set name="users" inverse="true">
+            <key>
+                <column name="role_idrole" not-null="true" />
+            </key>
+            <one-to-many class="model.pojos.User" />
+        </set>
+    </class>
+</hibernate-mapping>

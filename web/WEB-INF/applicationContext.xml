@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+             
+    <!-- Logging -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    
+    <bean class="model.log.LogAspect" scope="session">
+        <property name="logDao" ref="logDao"/>
+    </bean>
+    
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+          p:location="/WEB-INF/jdbc.properties" />
+
+    <bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+          p:driverClassName="${jdbc.driverClassName}"
+          p:url="${jdbc.url}"
+          p:username="${jdbc.username}"
+          p:password="${jdbc.password}"/>
+
+    <!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mappingResources" >
+            <list>
+                <value>model/pojos/Product.hbm.xml</value>
+                <value>model/pojos/Role.hbm.xml</value>
+                <value>model/pojos/Store.hbm.xml</value>
+                <value>model/pojos/Lot.hbm.xml</value>
+                <value>model/pojos/User.hbm.xml</value>
+                <value>model/pojos/Log.hbm.xml</value>
+            </list>
+        </property>
+        <property name="hibernateProperties"> 
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.current_session_context_class">thread</prop>
+                <prop key="hibernate.query.factory_class">org.hibernate.hql.classic.ClassicQueryTranslatorFactory</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <!-- Add hibernate template -->
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!-- Can you get Spring context everywhere -->
+    <bean id="contextApplicationContextProvider" class="utils.ApplicationContextProvider"/> 
+
+    <!-- Daos -->
+    <bean id="logDao" class="model.daos.LogHibDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+    
+    <bean id="lotDao" class="model.daos.LotHibDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+    
+    <bean id="productDao" class="model.daos.ProductHibDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+    
+    <bean id="roleDao" class="model.daos.RoleHibDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+    
+    <bean id="storeDao" class="model.daos.StoreHibDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+    
+    <bean id="userDao" class="model.daos.UserHibDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+    
+    <bean id="legacyMagaz" class="legacy.LegacyMagaz"/>
+    
+    <!-- Controllers -->
+    <bean id="loginOperations" class="controllers.LoginController" scope="session">
+        <property name="storeDao" ref="storeDao"/>
+        <property name="userDao" ref="userDao"/>
+    </bean>
+    
+    <bean id="productOperations" class="controllers.ProductController" scope="session">
+        <property name="lotDao" ref="lotDao"/>
+        <property name="productDao" ref="productDao"/>
+    </bean>
+    
+    <bean id="storeOperations" class="controllers.StoreController" scope="session">
+        <property name="logDao" ref="logDao"/>
+        <property name="storeDao" ref="storeDao"/>
+        <property name="legacyMagaz" ref="legacyMagaz"/>
+    </bean>
+    
+    <bean id="userOperations" class="controllers.UserController" scope="session">
+        <property name="roleDao" ref="roleDao"/>
+        <property name="storeDao" ref="storeDao"/>
+        <property name="userDao" ref="userDao"/>
+    </bean>
+    
+    <!-- View Managers -->
+    <bean id="loginManager" class="ui.managers.LoginManager" scope="session">
+        <property name="loginOperations" ref="loginOperations"/>
+        <property name="storeOperations" ref="storeOperations"/>
+    </bean>
+    
+    <bean id="productManager" class="ui.managers.ProductManager" scope="session">
+        <property name="productOperations" ref="productOperations"/>
+    </bean>
+    
+    <bean id="storeManager" class="ui.managers.StoreManager" scope="session">
+        <property name="storeOperations" ref="storeOperations"/>
+    </bean>
+    
+    <bean id="userManager" class="ui.managers.UserManager" scope="session">
+        <property name="userOperations" ref="userOperations"/>
+        <property name="storeOperations" ref="storeOperations"/>
+    </bean>
+    
+    <!-- Views -->
+    <bean id="PaginaPrincipale" class="ui.view.LoggedView" scope="request"/>
+    
+    <bean id="VendiProdotti" class="ui.view.ProductView" scope="request">
+        <constructor-arg value="SELL" />
+        <constructor-arg value="VendiProdotti" />
+    </bean>
+    
+    <bean id="EliminaProdottiScaduti" class="ui.view.ProductView" scope="request">
+        <constructor-arg value="EXPIRED" />
+        <constructor-arg value="EliminaProdottiScaduti" />
+    </bean>
+    
+    <bean id="RestituisciProdotti" class="ui.view.ProductView" scope="request">
+        <constructor-arg value="RETURN" />
+        <constructor-arg value="RestituisciProdotti" />
+    </bean>
+   
+    <bean id="IndiciLocali" class="ui.view.IndexesView" scope="request">
+        <constructor-arg value="LOCAL" />
+    </bean>
+        
+    <bean id="IndiciMaster" class="ui.view.IndexesView" scope="request">
+        <constructor-arg value="GLOBAL" />
+    </bean>
+    
+    <bean id="VisualizzaUtenti" class="ui.view.UserView" scope="request"/>
+    
+    <bean id="VisualizzaLog" class="ui.view.LogView" scope="request"/>
+    
+    <!-- SubWindows -->
+    <bean id="CreaTipoProdotto" class="ui.subwindow.CreateProductTypeSW" scope="request"/>
+    
+    <bean id="InserisciLotto" class="ui.subwindow.InsertLotSW" scope="request"/>
+    
+    <bean id="OrdinaProdotti" class="ui.subwindow.OrderProductsSW" scope="request"/>
+    
+    <bean id="CreaNuovoUtente" class="ui.subwindow.CreateModifyUserSW" scope="request"/>
+
+</beans>
